@@ -43,7 +43,7 @@ public class RepeatReadStream {
         }
     }
 
-    public void setFile(File sourceFile) throws FileNotFoundException {
+    public void setFile(File sourceFile) throws FileNotFoundException, IOException {
         if (!sourceFile.exists() || !sourceFile.isFile()) {
             throw new FileNotFoundException("File is can not readable! please");
         }

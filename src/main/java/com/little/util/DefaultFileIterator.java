@@ -10,16 +10,11 @@ public class DefaultFileIterator implements FileIterator {
     @Override
     public void iterator(File rootFile, final FileFilter filter, Executable<File> executable) {
         if (!rootFile.isDirectory()){
-            executable.execute(rootFile);
+            executable.exec(rootFile);
             return;
         }
 
-        File[] files = rootFile.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory() || filter.accept(pathname);
-            }
-        });
+        File[] files = rootFile.listFiles(pathname -> pathname.isDirectory() || filter.accept(pathname));
 
         if (files != null && files.length > 0){
             for (File file : files){

@@ -3,27 +3,24 @@ package com.little.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.jaudiotagger.tag.FieldDataInvalidException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
-import org.jaudiotagger.tag.FieldDataInvalidException;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 
 /**
  * @author created by qingchuan.xia
  */
 public class DefaultUnpackNcm extends BaseUnpackNcm {
 
-    private static int byte2intLength = 4;
-    private static FileIterator fileIterator = new DefaultFileIterator();
-    private byte[] coreKey = ByteUtil.hexStr2Byte("687A4852416D736F356B496E62617857");
-    private byte[] metaKey = ByteUtil.hexStr2Byte("2331346C6A6B5F215C5D2630553C2728");
-    private byte[] headerKey = ByteUtil.hexStr2Byte("4354454e4644414d");
-
+    public DefaultUnpackNcm(int zeroCopyFlag) {
+        stream = zeroCopyFlag == GlobalConfig.ZERO_COPY ? new ZerocopyRepeatReadStream() : new RepeatReadStream();
+    }
 
     @Override
     byte[] readKey() throws IOException {
@@ -111,7 +108,6 @@ public class DefaultUnpackNcm extends BaseUnpackNcm {
         String album = json.getString("album");
         String format = json.getString("format");
         String filePath = parentPath + "\\" + artist + " - " + name + "." + format;
-        filePath = filePath.replaceAll("/", "／");
         System.out.println("File: " + filePath);
         return new MusicInfo(name, artist, album, format, filePath);
     }

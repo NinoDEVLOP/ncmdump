@@ -5,6 +5,6 @@ package com.little.util;
  */
 public interface Executable<T> {
 
-    void execute(T t);
+    void exec(T t);
 
 }

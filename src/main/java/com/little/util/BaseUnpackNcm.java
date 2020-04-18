@@ -1,8 +1,5 @@
 package com.little.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -14,12 +11,22 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * @author created by qingchuan.xia
  */
 abstract class BaseUnpackNcm {
 
-    RepeatReadStream stream = new RepeatReadStream();
+    RepeatReadStream stream = null;
+    protected static int byte2intLength = 4;
+    protected static FileIterator fileIterator = new DefaultFileIterator();
+    protected byte[] coreKey = ByteUtil.hexStr2Byte("687A4852416D736F356B496E62617857");
+    protected byte[] metaKey = ByteUtil.hexStr2Byte("2331346C6A6B5F215C5D2630553C2728");
+    protected byte[] headerKey = ByteUtil.hexStr2Byte("4354454e4644414d");
+
 
     void ncm2NormalFormat(File file) throws TagException, ReadOnlyFileException, CannotReadException, InvalidAudioFrameException, IOException, CannotWriteException {
 
@@ -39,7 +46,7 @@ abstract class BaseUnpackNcm {
         byte[] cover = readAlbumCover();
         byte[] musicData = readMusic(keyData);
         MusicInfo musicInfo = getInfo(file.getParent(), meteData);
-        File saveFile = new File(musicInfo.getFilePath());
+        File saveFile = new File(file.getAbsolutePath().replace(".ncm", "." + musicInfo.getFormat()));
         write(saveFile, musicData);
         AudioFile music = AudioFileIO.read(saveFile);
         Tag tag = music.getTag();
