@@ -50,7 +50,6 @@ public class DefaultUnpackNcm extends BaseUnpackNcm {
 
     @Override
     String readMetaData() throws IOException {
-
         int meteLength = readLength();
         byte[] meteDate = stream.readFile(meteLength).getValidByte();
         for (int i = 0; i < meteDate.length; i++) {
@@ -60,7 +59,7 @@ public class DefaultUnpackNcm extends BaseUnpackNcm {
         meteDate = Base64.getDecoder().decode(meteDate);
         meteDate = AesUtils.decrypt(metaKey, meteDate);
         String metaDataStr = removeChar(new String(meteDate, Charset.forName("UTF-8")), 6);
-        return removeChar(new String(meteDate), 6);
+        return metaDataStr;
     }
 
     @Override
